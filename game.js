@@ -5,6 +5,118 @@ const GAME_STATES = {
     SHOPPING: 'shopping',
     GAME_OVER: 'game_over'
 };
+const localImageEvents = {
+    combat: {
+        goblin: {
+            image: 'images/enemies/gobelin.png',
+            title: 'Un Goblin Apparaît !',
+            description: 'Un goblin sournois sort de derrière un rocher !',
+            className: 'popup-combat'
+        },
+        dragon: {
+            image: 'images/enemies/dragon.png', 
+            title: 'DRAGON ANCIEN !',
+            description: 'Le dragon rugit, ses écailles brillent !',
+            className: 'popup-combat'
+        },
+        orc: {
+            image: 'images/enemies/orc.png',
+            title: 'Un Orc Sauvage !',
+            description: 'Un orc féroce brandit sa hache !',
+            className: 'popup-combat'
+        },
+        troll: {
+            image: 'images/enemies/troll.png',
+            title: 'Un Troll Énorme !',
+            description: 'Le troll grogne, prêt à attaquer !',
+            className: 'popup-combat'
+        },
+        skeleton: {
+            image: 'images/enemies/squelette.png',
+            title: 'Un Squelette Errant !',
+            description: 'Un squelette hante les lieux, prêt à attaquer !',
+            className: 'popup-combat'
+        },
+    },
+    treasure: {
+        image: 'images/events/tresor.png',
+        title: 'Trésor Découvert !',
+        description: 'Un coffre rempli d\'or étincelant !',
+        className: 'popup-treasure'
+    },
+    levelup: {
+        image: 'images/events/level up.png',
+        title: 'NIVEAU SUPÉRIEUR !',
+        description: 'Tu gagnes en puissance !',
+        className: 'popup-level'
+    },
+    potion: {
+        image: 'images/events/potion.png',
+        title: 'Potion Trouvée !',
+        description: 'Une potion mystérieuse qui pourrait t\'aider !',
+        className: 'popup-item'
+    },                  
+    merchant: {
+        image: 'images/events/merchant.png',
+        title: 'Marchand Mystérieux !',
+        description: 'Un marchand apparaît et te propose des objets !',
+        className: 'popup-merchant'
+    },
+    trap: {
+        image: 'images/events/trap.png',
+        title: 'Piège Mortel !',
+        description: 'Tu tombes dans un piège ! Fais attention !',
+        className: 'popup-trap'
+    },
+    rest: {
+        image: 'images/events/rest.png',
+        title: 'Repos Bien Mérité !',
+        description: 'Tu trouves un endroit paisible pour te reposer.',
+        className: 'popup-rest'
+    },
+    nothing: {
+        image: 'images/events/nothing.png',
+        title: 'Rien Trouvé !',
+        description: 'Tu fouilles les lieux, mais ne trouves rien d\'utile.',
+        className: 'popup-nothing'
+    },
+    boss: {
+        image: 'images/events/boss.png',
+        title: 'Un Boss Apparait !',
+        description: 'Un puissant boss se dresse devant toi !',
+        className: 'popup-boss'
+    },
+    game_over: {
+        image: 'images/events/game_over.png',
+        title: 'Jeu Terminé !',
+        description: 'Tu as perdu... Recommence ton aventure !',
+        className: 'popup-game-over'
+    },
+    marcus: {
+        image: 'images/events/marcus.png',
+        title: 'Roi Marcus',
+        description: 'Le roi Marcus t\'accueille dans son château.',
+        className: 'popup-marcus'
+    },
+    alchemist: {
+        image: 'images/events/vera.png',
+        title: 'Alchimiste Vera',
+        description: 'L\'alchimiste Vera t\'offre des potions.',
+        className: 'popup-alchemist'
+    },
+    aldric: {
+        image: 'images/events/aldric.png',
+        title: 'Maître Aldric',
+        description: 'Le maître Aldric te confie une mission.',
+        className: 'popup-aldric'
+    },
+    gareth: {
+        image: 'images/events/gareth.png',
+        title: 'Capitaine Gareth',
+        description: 'Le capitaine Gareth t\'invite à combattre les monstres.',
+        className: 'popup-gareth'
+    }
+};
 
 let currentGameState = GAME_STATES.EXPLORING;
 let currentEnemy = null;
@@ -244,6 +356,64 @@ function updateEnemyUI() {
     }
 }
 
+// Fonction principale pour afficher les images
+function showLocalImagePopup(eventType, subType = null) {
+    const overlay = document.getElementById('imagePopupOverlay');
+    const content = document.getElementById('imagePopupContent');
+    const imageContainer = document.getElementById('popupImageContainer');
+    const title = document.getElementById('popupTitle');
+    const description = document.getElementById('popupDescription');
+
+    let eventData;
+    
+    if (subType && localImageEvents[eventType] && localImageEvents[eventType][subType]) {
+        eventData = localImageEvents[eventType][subType];
+    } else if (localImageEvents[eventType]) {
+        eventData = localImageEvents[eventType];
+    } else {
+        console.error('Image non trouvée:', eventType, subType);
+        return;
+    }
+
+    // Appliquer le style
+    content.className = 'image-popup-content';
+    if (eventData.className) {
+        content.classList.add(eventData.className.replace('popup-', ''));
+    }
+
+    // Afficher l'image
+    imageContainer.innerHTML = `<img src="${eventData.image}" alt="${eventData.title}" class="popup-image" onerror="handleImageError(this)">`;
+    
+    // Afficher texte
+    title.textContent = eventData.title;
+    description.textContent = eventData.description;
+
+    overlay.style.display = 'flex';
+    
+    // Auto-fermeture après 6 secondes
+    setTimeout(() => {
+        if (overlay.style.display === 'flex') {
+            closeImagePopup();
+        }
+    }, 6000);
+}
+
+function closeImagePopup() {
+    document.getElementById('imagePopupOverlay').style.display = 'none';
+}
+
+function handleImageError(img) {
+    img.style.display = 'none';
+    img.parentNode.innerHTML += `
+        <div style="width: 300px; height: 200px; background: #34495e; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; border: 2px dashed #f39c12;">
+            <div style="text-align: center; color: #f39c12;">
+                <div style="font-size: 3em;">🖼️</div>
+                <div>Image non trouvée</div>
+            </div>
+        </div>
+    `;
+}
 // ========== SYSTÈME DE QUÊTES ==========
 function updateQuestDisplay() {
     const activeQuestsDiv = safeGetElement('active-quests');
@@ -539,21 +709,15 @@ function setupEventListeners() {
                 case 'enemy':
                 case 'boss':
                     currentEnemy = getRandomEnemy();
-                    if (event === 'boss') {
-                        currentEnemy.health *= 2;
-                        currentEnemy.maxHealth *= 2;
-                        currentEnemy.attack += 5;
-                        currentEnemy.exp *= 2;
-                        currentEnemy.gold[0] *= 2;
-                        currentEnemy.gold[1] *= 2;
-                        currentEnemy.name = currentEnemy.name + ' (Boss)';
-                    }
+                    const enemyType = Object.keys(enemies).find(key => enemies[key].name === currentEnemy.name.replace(' (Boss)', ''));
+                    showLocalImagePopup('combat', enemyType);
                     showMessage(`${currentEnemy.name} apparaît ! Prépare-toi au combat !`);
                     changeGameState(GAME_STATES.COMBAT);
                     updateEnemyUI();
                     break;
 
                 case 'treasure':
+                    showLocalImagePopup('treasure');
                     player.stats.treasuresFound++;
                     const goldFound = Math.floor(Math.random() * 30) + 10;
                     player.gold += goldFound;
@@ -563,6 +727,7 @@ function setupEventListeners() {
                     break;
 
                 case 'merchant':
+                    showLocalImagePopup('merchant');
                     showMessage('Un marchand mystérieux apparaît et disparaît, laissant derrière lui une petite bourse...');
                     const merchantGold = Math.floor(Math.random() * 20) + 5;
                     player.gold += merchantGold;
@@ -571,6 +736,7 @@ function setupEventListeners() {
                     break;
 
                 case 'potion':
+                    showLocalImagePopup('potion');
                     const potionTypes = ['Potion de soin', 'Grande potion'];
                     const foundPotion = potionTypes[Math.floor(Math.random() * potionTypes.length)];
                     player.inventory.push(foundPotion);
@@ -580,6 +746,7 @@ function setupEventListeners() {
                     break;
 
                 case 'trap':
+                    showLocalImagePopup('trap');
                     const damage = Math.floor(Math.random() * 15) + 5;
                     player.health = Math.max(0, player.health - damage);
                     showMessage(`Tu tombes dans un piège ! Tu perds ${damage} PV !`);
@@ -593,6 +760,7 @@ function setupEventListeners() {
                     break;
 
                 case 'rest':
+                    showLocalImagePopup('rest');
                     const healAmount = Math.floor(player.maxHealth * 0.3);
                     player.health = Math.min(player.maxHealth, player.health + healAmount);
                     showMessage(`Tu trouves un endroit paisible pour te reposer. Tu récupères ${healAmount} PV.`);
@@ -601,6 +769,7 @@ function setupEventListeners() {
                     break;
 
                 case 'levelUp':
+                    showImagePopup('levelup');
                     gainExp(50);
                     showMessage('Tu sens une étrange énergie t\'envahir...');
                     break;
