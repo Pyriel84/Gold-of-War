@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gold of War</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ Gold of War ⚔️</h1>
+        
+        <div class="game-layout">
+            <!-- Panneau des statistiques du joueur -->
+            <div class="stats-panel">
+                <h2>👤 Héros</h2>
+                
+                <div class="stat-item">
+                    <strong>Nom :</strong>
+                    <span id="playerName">Héros</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>❤️ PV :</strong>
+                    <span id="playerHealth">100</span> / <span id="playerMaxHealth">100</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="healthFill" class="progress-fill" style="width: 100%"></div>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>⭐ Niveau :</strong>
+                    <span id="playerLevel">1</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>✨ XP :</strong>
+                    <span id="playerExp">0</span> / <span id="playerMaxExp">100</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="expFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>💰 Or :</strong>
+                    <span id="playerGold">50</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>⚔️ Attaque :</strong>
+                    <span id="playerAttack">10</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>🛡️ Défense :</strong>
+                    <span id="playerDefense">5</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>🎒 Inventaire :</strong>
+                </div>
+                <div style="font-size: 0.9em; color: #bdc3c7; margin-top: 5px;">
+                    <span id="playerInventory">épée rouillée</span>
+                </div>
+            </div>
+
+            <!-- Section histoire principale -->
+            <div class="story-section">
+                <div id="story">
+                    <p>🌟 Bienvenue, brave aventurier ! Ton périple commence maintenant...</p>
+                </div>
+                
+                <div class="controls">
+                    <button id="exploreBtn">🗺️ Explorer</button>
+                    <button id="attackBtn" style="display: none;">⚔️ Attaquer</button>
+                    <button id="fleeBtn" style="display: none;">🏃 Fuir</button>
+                    <button id="useItemBtn" style="display: none;">🧪 Utiliser une potion</button>
+                    <button id="shopBtn">🏪 Aller au magasin</button>
+                    <button id="questBtn">📜 Chercher des quêtes</button>
+                    <button id="restBtn">😴 Se reposer (10 or)</button>
+                </div>
+            </div>
+
+            <!-- Panneau des quêtes -->
+            <div class="quests-panel">
+                <h2>📜 Quêtes Actives</h2>
+                <div id="active-quests">
+                    <p style="text-align: center; color: #999;">Aucune quête active. Cherche des PNJ pour obtenir des missions !</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations sur l'ennemi -->
+        <div id="enemy-info" class="enemy-panel" style="display: none;">
+            <h2>👹 Ennemi</h2>
+            <div class="enemy-stats">
+                <div class="stat-item">
+                    <strong>Nom :</strong>
+                    <span id="enemyName">-</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>❤️ PV :</strong>
+                    <span id="enemyHealth">0</span> / <span id="enemyMaxHealth">0</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>⚔️ Attaque :</strong>
+                    <span id="enemyAttack">0</span>
+                </div>
+                
+                <div class="stat-item">
+                    <strong>🛡️ Défense :</strong>
+                    <span id="enemyDefense">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons utilitaires -->
+        <div class="utility-buttons">
+            <button id="saveBtn">💾 Sauvegarder</button>
+            <button id="loadBtn">📁 Charger</button>
+            <button id="resetBtn">🔄 Nouvelle partie</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
