@@ -123,7 +123,20 @@
             <button id="resetBtn">🔄 Nouvelle partie</button>
         </div>
     </div>
-
+<div id="imagePopupOverlay" class="image-popup-overlay">
+    <div id="imagePopupContent" class="image-popup-content">
+        <button class="close-button" onclick="closeImagePopup()">×</button>
+        <div id="popupImageContainer"></div>
+        <div id="popupTitle" class="popup-title"></div>
+        <div id="popupDescription" class="popup-description"></div>
+        <div id="popupStats" class="popup-stats">
+            <div id="statsContent"></div>
+        </div>
+        <div>
+            <button class="popup-continue" onclick="closeImagePopup()">Continuer l'aventure</button>
+        </div>
+    </div>
+</div>
     <script src="game.js"></script>
 </body>
 </html>
