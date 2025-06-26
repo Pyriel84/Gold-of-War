@@ -7,13 +7,25 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+    <!-- Modal de sélection du nom -->
+    <div id="nameModal" class="name-modal">
+        <div class="name-modal-content">
+            <h2>⚔️ Bienvenue, Aventurier ! ⚔️</h2>
+            <p style="margin-bottom: 20px;">Quel est ton nom, brave héros ?</p>
+            <input type="text" id="playerNameInput" class="name-input" placeholder="Tape ton nom ici..." maxlength="20">
+            <div>
+                <button id="confirmNameBtn">Commencer l'aventure !</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>⚔️ Gold of War ⚔️</h1>
         
         <div class="game-layout">
             <!-- Panneau des statistiques du joueur -->
             <div class="stats-panel">
-                <h2>👤 Héros</h2>
+                <h2>👤 <span id="playerNameTitle">Héros</span></h2>
                 
                 <div class="stat-item">
                     <strong>Nom :</strong>
@@ -67,7 +79,7 @@
             <!-- Section histoire principale -->
             <div class="story-section">
                 <div id="story">
-                    <p>🌟 Bienvenue, brave aventurier ! Ton périple commence maintenant...</p>
+                    <p>Bienvenue, brave aventurier ! Ton périple commence maintenant...</p>
                 </div>
                 
                 <div class="controls">
@@ -75,7 +87,7 @@
                     <button id="attackBtn" style="display: none;">⚔️ Attaquer</button>
                     <button id="fleeBtn" style="display: none;">🏃 Fuir</button>
                     <button id="useItemBtn" style="display: none;">🧪 Utiliser une potion</button>
-                    <button id="shopBtn">🏪 Aller au magasin</button>
+                    <button id="shopBtn">🏪 Magasin</button>
                     <button id="questBtn">📜 Chercher des quêtes</button>
                     <button id="restBtn">😴 Se reposer (10 or)</button>
                 </div>
@@ -86,6 +98,9 @@
                 <h2>📜 Quêtes Actives</h2>
                 <div id="active-quests">
                     <p style="text-align: center; color: #999;">Aucune quête active. Cherche des PNJ pour obtenir des missions !</p>
+                </div>
+                <div class="quest-tip">
+                    <strong>💡 Astuce:</strong> Utilise le bouton "📜 Chercher des quêtes" pour rencontrer des PNJ qui ont besoin d'aide !
                 </div>
             </div>
         </div>
@@ -121,22 +136,27 @@
             <button id="saveBtn">💾 Sauvegarder</button>
             <button id="loadBtn">📁 Charger</button>
             <button id="resetBtn">🔄 Nouvelle partie</button>
+            <button id="changeNameBtn">✏️ Changer de nom</button>
         </div>
     </div>
-<div id="imagePopupOverlay" class="image-popup-overlay">
-    <div id="imagePopupContent" class="image-popup-content">
-        <button class="close-button" onclick="closeImagePopup()">×</button>
-        <div id="popupImageContainer"></div>
-        <div id="popupTitle" class="popup-title"></div>
-        <div id="popupDescription" class="popup-description"></div>
-        <div id="popupStats" class="popup-stats">
-            <div id="statsContent"></div>
-        </div>
-        <div>
-            <button class="popup-continue" onclick="closeImagePopup()">Continuer l'aventure</button>
+
+    <!-- Modal d'événement -->
+    <div id="eventModal" class="modal-overlay">
+        <div id="eventModalContent" class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">Titre de l'événement</h3>
+                <button class="modal-close" onclick="closeEventModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalImageContainer" class="modal-image-container"></div>
+                <p id="modalDescription" class="modal-description">Description de l'événement</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="closeEventModal()">Continuer l'aventure</button>
+            </div>
         </div>
     </div>
-</div>
+
     <script src="game.js"></script>
 </body>
 </html>
