@@ -17,7 +17,9 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background: rgba(52, 73, 93, 0.9);
+    background-image: url('/images/locations/depart.png');
+    background-size: cover;
+    background-position: center;
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -25,10 +27,59 @@ body {
 
 h1 {
     text-align: center;
-    font-size: 2.5em;
+    font-size: 4em;
     margin-bottom: 30px;
     color: #f39c12;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== MODAL DE SÉLECTION DU NOM ========== */
+.name-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.name-modal-content {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 3px solid #f39c12;
+    max-width: 400px;
+    width: 90%;
+}
+
+.name-modal h2 {
+    color: #f39c12;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.name-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #f39c12;
+    border-radius: 8px;
+    background: rgba(52, 73, 93, 0.8);
+    color: #ecf0f1;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: #e67e22;
+    box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
 }
 
 /* ========== LAYOUT PRINCIPAL ========== */
@@ -47,6 +98,7 @@ h1 {
     border-radius: 10px;
     padding: 20px;
     border: 2px solid #34495e;
+    position: relative;
 }
 
 .stats-panel h2, 
@@ -99,6 +151,7 @@ h1 {
     margin: 20px 0;
     border: 2px solid #34495e;
     min-height: 200px;
+    position: relative;
 }
 
 #story {
@@ -189,11 +242,13 @@ button:disabled {
     margin: 10px 0;
     border-radius: 8px;
     border: 2px solid #3498db;
+    animation: fadeIn 0.3s ease;
 }
 
 .quest-complete {
     background: rgba(46, 204, 113, 0.2);
     border-color: #2ecc71;
+    animation: pulse 0.6s ease;
 }
 
 .quest-title {
@@ -210,6 +265,18 @@ button:disabled {
 .quest-reward {
     font-size: 0.8em;
     color: #95a5a6;
+}
+
+/* ========== ASTUCE QUÊTES ========== */
+.quest-tip {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 8px;
+    border: 1px solid #3498db;
+    font-size: 0.85em;
+    color: #bdc3c7;
+    line-height: 1.4;
 }
 
 /* ========== NOTIFICATIONS ========== */
@@ -241,6 +308,445 @@ button:disabled {
 .npc-button:hover, 
 .shop-button:hover {
     background: linear-gradient(135deg, #8e44ad, #7d3c98);
+}
+
+/* ========== BOUTONS DE VENTE ========== */
+.shop-button[disabled] {
+    background: #7f8c8d !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.shop-sell-item {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    border-left: 4px solid #f39c12;
+}
+
+.shop-sell-item:hover {
+    background: linear-gradient(135deg, #d35400, #c0392b);
+}
+
+.shop-main-button {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    font-size: 1.1em;
+    padding: 15px 25px;
+    margin: 10px 5px;
+}
+
+.shop-main-button:hover {
+    background: linear-gradient(135deg, #2980b9, #1f618d);
+}
+
+/* ========== MODALS ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: modalFadeIn 0.3s ease-out;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+    border: 3px solid #f39c12;
+    overflow: hidden;
+    animation: modalSlideIn 0.4s ease-out;
+    position: relative;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #d35400;
+}
+
+.modal-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 24px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 25px;
+    text-align: center;
+    color: #ecf0f1;
+}
+
+.modal-image-container {
+    margin-bottom: 20px;
+}
+
+.modal-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border: 3px solid #f39c12;
+}
+
+.modal-description {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin: 15px 0;
+    color: #bdc3c7;
+}
+
+.modal-footer {
+    background: rgba(44, 62, 80, 0.8);
+    padding: 20px;
+    text-align: center;
+    border-top: 2px solid #34495e;
+}
+
+.modal-button {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+    border: 2px solid #f1c40f;
+}
+
+.modal-button:hover {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+}
+
+.modal-button:active {
+    transform: translateY(0);
+}
+
+/* ========== STYLES SPÉCIALISÉS POUR DIFFÉRENTS TYPES DE MODALS ========== */
+.modal-combat {
+    border-color: #e74c3c;
+}
+
+.modal-combat .modal-header {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.modal-treasure {
+    border-color: #f1c40f;
+}
+
+.modal-treasure .modal-header {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+}
+
+.modal-level {
+    border-color: #9b59b6;
+}
+
+.modal-level .modal-header {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.modal-quest {
+    border-color: #3498db;
+}
+
+.modal-quest .modal-header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.modal-quest-complete {
+    border-color: #2ecc71;
+    animation: modalCompleteGlow 1s ease-in-out;
+}
+
+.modal-quest-complete .modal-header {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.modal-reward {
+    border-color: #f39c12;
+    animation: modalRewardShine 1.5s ease-in-out;
+}
+
+.modal-reward .modal-header {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.modal-marcus .modal-header {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.modal-alchemist .modal-header {
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+}
+
+.modal-aldric .modal-header {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+}
+
+.modal-gareth .modal-header {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+}
+
+/* ========== ANIMATIONS MODALS ========== */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalCompleteGlow {
+    0%, 100% {
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+    }
+    50% {
+        box-shadow: 0 25px 80px rgba(46, 204, 113, 0.8), 0 0 40px rgba(46, 204, 113, 0.6);
+    }
+}
+
+@keyframes modalRewardShine {
+    0%, 100% {
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+    }
+    25%, 75% {
+        box-shadow: 0 25px 80px rgba(243, 156, 18, 0.8), 0 0 50px rgba(241, 196, 15, 0.7);
+    }
+    50% {
+        box-shadow: 0 25px 80px rgba(243, 156, 18, 1), 0 0 60px rgba(241, 196, 15, 0.9);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes questCompleteGlow {
+    0%, 100% {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 20px 60px rgba(46, 204, 113, 0.8), 0 0 30px rgba(46, 204, 113, 0.6);
+    }
+}
+
+@keyframes rewardShine {
+    0%, 100% {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    25%, 75% {
+        box-shadow: 0 20px 60px rgba(243, 156, 18, 0.8), 0 0 40px rgba(241, 196, 15, 0.7);
+    }
+    50% {
+        box-shadow: 0 20px 60px rgba(243, 156, 18, 1), 0 0 50px rgba(241, 196, 15, 0.9);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes questButtonGlow {
+    0%, 100% {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5), 0 0 15px rgba(243, 156, 18, 0.3);
+    }
+}
+
+/* ========== POP-UP SPÉCIALISÉS ========== */
+.modal-combat {
+    border-color: #e74c3c;
+}
+
+.modal-combat .modal-header {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.modal-treasure {
+    border-color: #f1c40f;
+}
+
+.modal-treasure .modal-header {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+}
+
+.modal-level {
+    border-color: #9b59b6;
+}
+
+.modal-level .modal-header {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.modal-quest {
+    border-color: #3498db;
+}
+
+.modal-quest .modal-header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.modal-quest-complete {
+    border-color: #2ecc71;
+    animation: modalCompleteGlow 1s ease-in-out;
+}
+
+.modal-quest-complete .modal-header {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.modal-reward {
+    border-color: #f39c12;
+    animation: modalRewardShine 1.5s ease-in-out;
+}
+
+.modal-reward .modal-header {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.modal-marcus .modal-header {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.modal-alchemist .modal-header {
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+}
+
+.modal-aldric .modal-header {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+}
+
+.modal-gareth .modal-header {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+}
+
+/* ========== VERSION EMOJI GRANDE TAILLE ========== */
+.emoji-popup {
+    font-size: 8em;
+    margin: 20px 0;
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: bounceIn 0.6s ease;
+}
+
+/* ========== AMÉLIORATIONS VISUELLES ========== */
+.stats-panel::before,
+.enemy-panel::before,
+.quests-panel::before,
+.story-section::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #f39c12, #e67e22, #f39c12);
+    border-radius: 12px;
+    z-index: -1;
+    opacity: 0.1;
+}
+
+/* ========== EFFETS DE SURVOL ========== */
+.stats-panel:hover,
+.enemy-panel:hover,
+.quests-panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* ========== SCROLLBAR PERSONNALISÉE ========== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2c3e50;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #f39c12;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #e67e22;
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
@@ -277,6 +783,36 @@ button:disabled {
         width: 100%;
         max-width: 200px;
     }
+
+    /* Modals responsives */
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .modal-header {
+        padding: 15px;
+    }
+
+    .modal-title {
+        font-size: 1.2em;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-image {
+        max-height: 200px;
+    }
+
+    .modal-description {
+        font-size: 1em;
+    }
+
+    .modal-footer {
+        padding: 15px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -303,259 +839,3 @@ button:disabled {
         gap: 5px;
     }
 }
-
-/* ========== ANIMATIONS ========== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.quest-item {
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.quest-complete {
-    animation: pulse 0.6s ease;
-}
-
-/* ========== AMÉLIORATIONS VISUELLES ========== */
-.stats-panel::before,
-.enemy-panel::before,
-.quests-panel::before,
-.story-section::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #f39c12, #e67e22, #f39c12);
-    border-radius: 12px;
-    z-index: -1;
-    opacity: 0.1;
-}
-
-.stats-panel,
-.enemy-panel,
-.quests-panel,
-.story-section {
-    position: relative;
-}
-
-/* ========== EFFETS DE SURVOL ========== */
-.stats-panel:hover,
-.enemy-panel:hover,
-.quests-panel:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-/* ========== SCROLLBAR PERSONNALISÉE ========== */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #2c3e50;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #f39c12;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #e67e22;
-}
-
-/* ========== POP-UP D'IMAGE ========== */
-.image-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .image-popup-content {
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            border-radius: 15px;
-            padding: 20px;
-            max-width: 90%;
-            max-height: 90%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 3px solid #f39c12;
-            position: relative;
-            animation: slideIn 0.4s ease;
-        }
-
-        .popup-image {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .popup-title {
-            font-size: 1.5em;
-            color: #f39c12;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .popup-description {
-            font-size: 1.1em;
-            color: #ecf0f1;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .popup-close {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .popup-close:hover {
-            background: linear-gradient(135deg, #c0392b, #a93226);
-            transform: scale(1.05);
-        }
-
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #f39c12;
-            font-size: 24px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-button:hover {
-            color: #e67e22;
-            transform: scale(1.2);
-        }
-
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.7) translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* ========== POP-UP SPÉCIALISÉS ========== */
-        .popup-combat {
-            border-color: #e74c3c;
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-        }
-
-        .popup-treasure {
-            border-color: #f1c40f;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
-
-        .popup-level {
-            border-color: #9b59b6;
-            background: linear-gradient(135deg, #8e44ad, #7d3c98);
-        }
-
-        .popup-quest {
-            border-color: #3498db;
-            background: linear-gradient(135deg, #2980b9, #1f618d);
-        }
-
-        /* ========== VERSION EMOJI GRANDE TAILLE ========== */
-        .emoji-popup {
-            font-size: 8em;
-            margin: 20px 0;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: bounceIn 0.6s ease;
-        }
-
-        @keyframes bounceIn {
-            0% {
-                transform: scale(0.3);
-                opacity: 0;
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            .image-popup-content {
-                margin: 20px;
-                padding: 15px;
-            }
-
-            .popup-image {
-                max-height: 250px;
-            }
-
-            .emoji-popup {
-                font-size: 5em;
-            }
-
-            .popup-title {
-                font-size: 1.3em;
-            }
-
-            .popup-description {
-                font-size: 1em;
-            }
-        }
