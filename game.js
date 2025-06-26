@@ -5,6 +5,7 @@ const GAME_STATES = {
     SHOPPING: 'shopping',
     GAME_OVER: 'game_over'
 };
+
 const localImageEvents = {
     combat: {
         goblin: {
@@ -45,7 +46,7 @@ const localImageEvents = {
         className: 'popup-treasure'
     },
     levelup: {
-        image: 'images/events/level up.png',
+        image: 'images/events/level-up.png',
         title: 'NIVEAU SUPÉRIEUR !',
         description: 'Tu gagnes en puissance !',
         className: 'popup-level'
@@ -69,52 +70,76 @@ const localImageEvents = {
         className: 'popup-trap'
     },
     rest: {
-        image: 'images/events/rest.png',
+        image: 'images/events/repos.png',
         title: 'Repos Bien Mérité !',
         description: 'Tu trouves un endroit paisible pour te reposer.',
         className: 'popup-rest'
     },
     nothing: {
-        image: 'images/events/nothing.png',
+        image: 'images/locations/depart.png',
         title: 'Rien Trouvé !',
         description: 'Tu fouilles les lieux, mais ne trouves rien d\'utile.',
         className: 'popup-nothing'
     },
     boss: {
-        image: 'images/events/boss.png',
+        image: 'images/enemies/boss.png',
         title: 'Un Boss Apparait !',
         description: 'Un puissant boss se dresse devant toi !',
         className: 'popup-boss'
     },
     game_over: {
-        image: 'images/events/game_over.png',
+        image: 'images/events/game-over.png',
         title: 'Jeu Terminé !',
         description: 'Tu as perdu... Recommence ton aventure !',
         className: 'popup-game-over'
     },
     marcus: {
-        image: 'images/events/marcus.png',
+        image: 'images/npcs/marcus.png',
         title: 'Roi Marcus',
         description: 'Le roi Marcus t\'accueille dans son château.',
         className: 'popup-marcus'
     },
     alchemist: {
-        image: 'images/events/vera.png',
+        image: 'images/npcs/vera.png',
         title: 'Alchimiste Vera',
         description: 'L\'alchimiste Vera t\'offre des potions.',
         className: 'popup-alchemist'
     },
     aldric: {
-        image: 'images/events/aldric.png',
+        image: 'images/npcs/aldric.png',
         title: 'Maître Aldric',
         description: 'Le maître Aldric te confie une mission.',
         className: 'popup-aldric'
     },
     gareth: {
-        image: 'images/events/gareth.png',
+        image: 'images/npcs/gareth.png',
         title: 'Capitaine Gareth',
         description: 'Le capitaine Gareth t\'invite à combattre les monstres.',
         className: 'popup-gareth'
+    },
+    quest_given: {
+        image: 'images/events/quest-given.png',
+        title: 'Nouvelle Mission !',
+        description: 'Un PNJ t\'a confié une mission importante !',
+        className: 'popup-quest'
+    },
+    quest_completed: {
+        image: 'images/events/quest-complete.png',
+        title: 'Mission Accomplie !',
+        description: 'Tu as terminé ta mission avec succès !',
+        className: 'popup-quest-complete'
+    },
+    quest_reward: {
+        image: 'images/events/quest-reward.png',
+        title: 'Récompense Obtenue !',
+        description: 'Tu récupères ta récompense bien méritée !',
+        className: 'popup-reward'
+    },
+    no_quest: {
+        image: 'images/events/no-quest.png',
+        title: 'Aucune Mission',
+        description: 'Personne n\'a besoin d\'aide pour le moment.',
+        className: 'popup-nothing'
     }
 };
 
@@ -133,7 +158,6 @@ let player = {
     attack: 10,
     defense: 5,
     inventory: ['épée rouillée'],
-    // Statistiques pour les quêtes
     stats: {
         enemiesKilled: 0,
         treasuresFound: 0,
@@ -198,7 +222,6 @@ const questTemplates = {
     }
 };
 
-// PNJ qui donnent des quêtes
 const questGivers = [
     {
         name: "Maître Aldric",
@@ -222,7 +245,6 @@ const questGivers = [
     }
 ];
 
-// Ennemis possibles
 const enemies = {
     goblin: { name: 'Gobelin', health: 30, maxHealth: 30, attack: 8, defense: 2, exp: 15, gold: [5, 15] },
     orc: { name: 'Orc', health: 50, maxHealth: 50, attack: 12, defense: 4, exp: 25, gold: [10, 25] },
@@ -231,7 +253,6 @@ const enemies = {
     skeleton: { name: 'Squelette', health: 40, maxHealth: 40, attack: 10, defense: 3, exp: 20, gold: [8, 20] }
 };
 
-// Objets du magasin
 const shopItems = {
     potion: { name: 'Potion de soin', price: 15, effect: 'heal', value: 40 },
     sword: { name: 'Épée en acier', price: 80, effect: 'attack', value: 5 },
@@ -239,19 +260,30 @@ const shopItems = {
     bigPotion: { name: 'Grande potion', price: 35, effect: 'heal', value: 80 }
 };
 
-// Éléments DOM - avec vérification d'existence
+const itemSellPrices = {
+    'Potion de soin': 7,
+    'Grande potion': 17,
+    'Épée en acier': 40,
+    'Armure de cuir': 60,
+    'épée rouillée': 2,
+    'Épée de fer': 25,
+    'Bouclier en bois': 15,
+    'Amulette de chance': 30,
+    'Gemme précieuse': 50
+};
+
 let domElements = {};
 
 // ========== FONCTIONS UTILITAIRES ==========
 function initializeDOMElements() {
     const elementIds = [
         'exploreBtn', 'attackBtn', 'fleeBtn', 'useItemBtn', 'shopBtn', 
-        'questBtn', 'restBtn', 'saveBtn', 'loadBtn', 'resetBtn', 
-        'story', 'enemy-info', 'active-quests', 'playerName', 'playerHealth', 
-        'playerMaxHealth', 'playerGold', 'playerLevel', 'playerExp', 
+        'questBtn', 'restBtn', 'saveBtn', 'loadBtn', 'resetBtn', 'changeNameBtn',
+        'story', 'enemy-info', 'active-quests', 'playerName', 'playerNameTitle',
+        'playerHealth', 'playerMaxHealth', 'playerGold', 'playerLevel', 'playerExp', 
         'playerMaxExp', 'playerAttack', 'playerDefense', 'playerInventory',
         'healthFill', 'expFill', 'enemyName', 'enemyHealth', 'enemyMaxHealth',
-        'enemyAttack', 'enemyDefense'
+        'enemyAttack', 'enemyDefense', 'nameModal', 'playerNameInput', 'confirmNameBtn'
     ];
     
     elementIds.forEach(id => {
@@ -263,7 +295,7 @@ function initializeDOMElements() {
 }
 
 function safeGetElement(id) {
-    return domElements[id] || null;
+    return domElements[id] || document.getElementById(id) || null;
 }
 
 function showMessage(message) {
@@ -301,6 +333,7 @@ function showNotification(message) {
 function updateUI() {
     const elements = [
         ['playerName', player.name],
+        ['playerNameTitle', player.name],
         ['playerHealth', player.health],
         ['playerMaxHealth', player.maxHealth],
         ['playerGold', player.gold],
@@ -319,7 +352,6 @@ function updateUI() {
         }
     });
     
-    // Barres de progression
     const healthPercent = (player.health / player.maxHealth) * 100;
     const expPercent = (player.exp / player.maxExp) * 100;
     
@@ -356,17 +388,47 @@ function updateEnemyUI() {
     }
 }
 
-// Fonction principale pour afficher les images
-function showLocalImagePopup(eventType, subType = null) {
-    const overlay = document.getElementById('imagePopupOverlay');
-    const content = document.getElementById('imagePopupContent');
-    const imageContainer = document.getElementById('popupImageContainer');
-    const title = document.getElementById('popupTitle');
-    const description = document.getElementById('popupDescription');
+// ========== SYSTÈME DE MODALS ==========
+function ensureModalExists() {
+    if (!document.getElementById('eventModal')) {
+        const modalHTML = `
+            <div id="eventModal" class="modal-overlay">
+                <div id="eventModalContent" class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle" class="modal-title">Titre de l'événement</h3>
+                        <button class="modal-close" onclick="closeEventModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalImageContainer" class="modal-image-container"></div>
+                        <p id="modalDescription" class="modal-description">Description de l'événement</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-button" onclick="closeEventModal()">Continuer l'aventure</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+}
+
+function showEventModal(eventType, subType = null) {
+    ensureModalExists();
+    
+    const overlay = document.getElementById('eventModal');
+    const content = document.getElementById('eventModalContent');
+    const imageContainer = document.getElementById('modalImageContainer');
+    const title = document.getElementById('modalTitle');
+    const description = document.getElementById('modalDescription');
+
+    if (!overlay || !content || !imageContainer || !title || !description) {
+        console.error('Impossible de créer les éléments du modal');
+        return;
+    }
 
     let eventData;
     
-    if (subType && localImageEvents[eventType] && localImageEvents[eventType][subType]) {
+    if (subType && localImageEvents[eventType]?.[subType]) {
         eventData = localImageEvents[eventType][subType];
     } else if (localImageEvents[eventType]) {
         eventData = localImageEvents[eventType];
@@ -375,45 +437,106 @@ function showLocalImagePopup(eventType, subType = null) {
         return;
     }
 
-    // Appliquer le style
-    content.className = 'image-popup-content';
+    content.className = 'modal-content';
     if (eventData.className) {
-        content.classList.add(eventData.className.replace('popup-', ''));
+        content.classList.add(eventData.className.replace('popup-', 'modal-'));
     }
 
-    // Afficher l'image
-    imageContainer.innerHTML = `<img src="${eventData.image}" alt="${eventData.title}" class="popup-image" onerror="handleImageError(this)">`;
-    
-    // Afficher texte
-    title.textContent = eventData.title;
-    description.textContent = eventData.description;
-
-    overlay.style.display = 'flex';
-    
-    // Auto-fermeture après 6 secondes
-    setTimeout(() => {
-        if (overlay.style.display === 'flex') {
-            closeImagePopup();
-        }
-    }, 6000);
+    try {
+        imageContainer.innerHTML = `<img src="${eventData.image}" alt="${eventData.title}" class="modal-image" onerror="handleModalImageError(this)">`;
+        title.textContent = eventData.title;
+        description.textContent = eventData.description;
+        overlay.style.display = 'flex';
+    } catch (error) {
+        console.error('Erreur lors de l\'affichage du modal:', error);
+    }
 }
 
-function closeImagePopup() {
-    document.getElementById('imagePopupOverlay').style.display = 'none';
+function closeEventModal() {
+    const overlay = document.getElementById('eventModal');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
 }
 
-function handleImageError(img) {
+function handleModalImageError(img) {
     img.style.display = 'none';
+    
+    const eventType = img.alt || '';
+    let emoji = '🖼️';
+    let bgColor = '#34495e';
+    
+    if (eventType.includes('combat') || eventType.includes('Goblin') || eventType.includes('Dragon')) {
+        emoji = '⚔️';
+        bgColor = '#e74c3c';
+    } else if (eventType.includes('trésor') || eventType.includes('Trésor')) {
+        emoji = '💰';
+        bgColor = '#f39c12';
+    } else if (eventType.includes('niveau') || eventType.includes('NIVEAU')) {
+        emoji = '⭐';
+        bgColor = '#9b59b6';
+    } else if (eventType.includes('Mission') || eventType.includes('quête')) {
+        emoji = '📜';
+        bgColor = '#3498db';
+    } else if (eventType.includes('Marcus')) {
+        emoji = '👑';
+        bgColor = '#9b59b6';
+    } else if (eventType.includes('Vera') || eventType.includes('Alchimiste')) {
+        emoji = '🧪';
+        bgColor = '#1abc9c';
+    } else if (eventType.includes('Aldric')) {
+        emoji = '🧙‍♂️';
+    } else if (eventType.includes('Gareth')) {
+        emoji = '🛡️';
+        bgColor = '#e67e22';
+    }
+    
     img.parentNode.innerHTML += `
-        <div style="width: 300px; height: 200px; background: #34495e; border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center; border: 2px dashed #f39c12;">
+        <div style="width: 100%; height: 200px; background: ${bgColor}; border-radius: 15px; 
+            display: flex; align-items: center; justify-content: center; border: 3px solid #f39c12; margin: 10px 0;">
             <div style="text-align: center; color: #f39c12;">
-                <div style="font-size: 3em;">🖼️</div>
-                <div>Image non trouvée</div>
+                <div style="font-size: 4em; margin-bottom: 10px;">${emoji}</div>
+                <div style="font-size: 1.2em; font-weight: bold;">Événement</div>
             </div>
         </div>
     `;
 }
+
+// ========== GESTION DU NOM DU JOUEUR ==========
+function showNameModal() {
+    const modal = safeGetElement('nameModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const input = safeGetElement('playerNameInput');
+        if (input) input.focus();
+    }
+}
+
+function hideNameModal() {
+    const modal = safeGetElement('nameModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function setPlayerName() {
+    const nameInput = safeGetElement('playerNameInput');
+    if (!nameInput) return;
+    
+    const newName = nameInput.value.trim();
+    
+    if (newName && newName.length > 0) {
+        player.name = newName;
+        updateUI();
+        hideNameModal();
+        showMessage(`Bienvenue, ${player.name} ! Ton aventure commence maintenant...`);
+        showNotification(`Bienvenue, ${player.name} !`);
+    } else {
+        alert('Veuillez entrer un nom valide !');
+        nameInput.focus();
+    }
+}
+
 // ========== SYSTÈME DE QUÊTES ==========
 function updateQuestDisplay() {
     const activeQuestsDiv = safeGetElement('active-quests');
@@ -441,8 +564,31 @@ function updateQuestDisplay() {
         
         if (quest.completed) {
             const claimBtn = document.createElement('button');
-            claimBtn.textContent = 'Réclamer récompense';
-            claimBtn.style.marginTop = '5px';
+            claimBtn.textContent = '🎁 Réclamer récompense';
+            claimBtn.style.marginTop = '8px';
+            claimBtn.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+            claimBtn.style.border = '2px solid #f1c40f';
+            claimBtn.style.color = 'white';
+            claimBtn.style.padding = '8px 16px';
+            claimBtn.style.borderRadius = '8px';
+            claimBtn.style.cursor = 'pointer';
+            claimBtn.style.fontWeight = 'bold';
+            claimBtn.style.fontSize = '0.9em';
+            claimBtn.style.transition = 'all 0.3s ease';
+            claimBtn.style.animation = 'questButtonGlow 2s ease-in-out infinite';
+            
+            claimBtn.addEventListener('mouseenter', () => {
+                claimBtn.style.transform = 'scale(1.05)';
+                claimBtn.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
+                claimBtn.style.animation = 'none';
+            });
+            
+            claimBtn.addEventListener('mouseleave', () => {
+                claimBtn.style.transform = 'scale(1)';
+                claimBtn.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+                claimBtn.style.animation = 'questButtonGlow 2s ease-in-out infinite';
+            });
+            
             claimBtn.addEventListener('click', () => claimQuestReward(index));
             questDiv.appendChild(claimBtn);
         }
@@ -452,7 +598,7 @@ function updateQuestDisplay() {
 }
 
 function getQuestProgress(quest) {
-    if (!quest || !quest.type) return 0;
+    if (!quest?.type) return 0;
     
     switch(quest.type) {
         case 'kill': return player.stats.enemiesKilled || 0;
@@ -471,8 +617,11 @@ function checkQuestProgress() {
             const progress = getQuestProgress(quest);
             if (progress >= quest.target) {
                 quest.completed = true;
+                setTimeout(() => {
+                    showEventModal('quest_completed');
+                }, 800);
                 showNotification(`Quête terminée: ${quest.title}`);
-                showMessage(`Tu as terminé la quête "${quest.title}" ! Tu peux maintenant réclamer ta récompense !`);
+                showMessage(`${player.name}, tu as terminé la quête "${quest.title}" ! Tu peux maintenant réclamer ta récompense !`);
             }
         }
     });
@@ -484,10 +633,14 @@ function claimQuestReward(questIndex) {
     
     const quest = activeQuests[questIndex];
     if (quest.completed) {
+        setTimeout(() => {
+            showEventModal('quest_reward');
+        }, 300);
+        
         player.gold += quest.rewards.gold;
         gainExp(quest.rewards.exp);
         
-        showMessage(`Tu réclames ta récompense pour "${quest.title}" : ${quest.rewards.gold} or et ${quest.rewards.exp} XP !`);
+        showMessage(`${player.name}, tu réclames ta récompense pour "${quest.title}" : ${quest.rewards.gold} or et ${quest.rewards.exp} XP !`);
         showNotification(`Récompense réclamée !`);
         
         completedQuests.push(quest);
@@ -511,11 +664,10 @@ function createQuest(templateKey) {
 
 function getAvailableQuest() {
     const availableTemplates = Object.keys(questTemplates).filter(key => {
-        // Vérifier si cette quête n'est pas déjà active ou récemment complétée
         const alreadyActive = activeQuests.some(q => q.title === questTemplates[key].title);
         const recentlyCompleted = completedQuests.some(q => 
             q.title === questTemplates[key].title && 
-            Date.now() - q.startTime < 300000 // 5 minutes
+            Date.now() - q.startTime < 300000
         );
         return !alreadyActive && !recentlyCompleted;
     });
@@ -530,8 +682,30 @@ function meetQuestGiver() {
     const giver = questGivers[Math.floor(Math.random() * questGivers.length)];
     const availableQuest = getAvailableQuest();
     
+    let npcImageKey;
+    switch(giver.name) {
+        case 'Roi Marcus':
+            npcImageKey = 'marcus';
+            break;
+        case 'Alchimiste Vera':
+            npcImageKey = 'alchemist';
+            break;
+        case 'Capitaine Gareth':
+            npcImageKey = 'gareth';
+            break;
+        case 'Maître Aldric':
+        default:
+            npcImageKey = 'aldric';
+            break;
+    }
+    
+    showEventModal(npcImageKey);
+    
     if (!availableQuest) {
-        showMessage(`${giver.name} : "${giver.dialogue}" Mais tu as déjà assez de missions pour le moment. Reviens plus tard !`);
+        setTimeout(() => {
+            showEventModal('no_quest');
+        }, 2000);
+        showMessage(`${giver.name} : "${giver.dialogue}" Mais tu as déjà assez de missions pour le moment, ${player.name}. Reviens plus tard !`);
         return;
     }
     
@@ -539,25 +713,31 @@ function meetQuestGiver() {
     
     setTimeout(() => {
         showMessage(`Mission proposée: "${availableQuest.title}" - ${availableQuest.description.replace('{target}', availableQuest.target)}`);
+        addMessage(`<strong>Récompenses:</strong> ${availableQuest.rewards.gold} or et ${availableQuest.rewards.exp} XP`);
         
         const acceptBtn = document.createElement('button');
-        acceptBtn.textContent = 'Accepter la mission';
+        acceptBtn.textContent = '✅ Accepter la mission';
         acceptBtn.className = 'npc-button';
+        acceptBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
         
         const declineBtn = document.createElement('button');
-        declineBtn.textContent = 'Refuser';
+        declineBtn.textContent = '❌ Refuser';
         declineBtn.className = 'npc-button';
+        declineBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
         
         acceptBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                showEventModal('quest_given');
+            }, 500);
             activeQuests.push(availableQuest);
-            showMessage(`Mission acceptée ! Tu peux voir tes quêtes actives dans le panneau ci-dessus.`);
+            showMessage(`Mission acceptée ! ${player.name}, tu peux voir tes quêtes actives dans le panneau ci-dessus.`);
             showNotification('Nouvelle mission !');
             updateQuestDisplay();
             removeNPCButtons();
         });
         
         declineBtn.addEventListener('click', () => {
-            showMessage(`${giver.name} : "Dommage... Peut-être une autre fois !"`);
+            showMessage(`${giver.name} : "Dommage ${player.name}... Peut-être une autre fois !"`);
             removeNPCButtons();
         });
         
@@ -566,7 +746,7 @@ function meetQuestGiver() {
             story.appendChild(acceptBtn);
             story.appendChild(declineBtn);
         }
-    }, 2000);
+    }, 3000);
 }
 
 function removeNPCButtons() {
@@ -577,6 +757,7 @@ function removeNPCButtons() {
     });
 }
 
+// ========== GESTION DES ÉTATS DE JEU ==========
 function hideAllButtons() {
     const buttonIds = ['exploreBtn', 'attackBtn', 'fleeBtn', 'useItemBtn', 'shopBtn', 'questBtn', 'restBtn'];
     buttonIds.forEach(id => {
@@ -589,11 +770,13 @@ function showButtonsForState(state) {
     hideAllButtons();
     
     switch(state) {
-        case GAME_STATES.EXPLORING:
-            const exploringButtons = ['exploreBtn', 'shopBtn', 'questBtn', 'restBtn'];
+        case GAME_STATES.EXPLORING: {
+            var exploringButtons = ['exploreBtn', 'shopBtn', 'questBtn', 'restBtn'];
             exploringButtons.forEach(id => {
                 const btn = safeGetElement(id);
-                if (btn) btn.style.display = 'inline-block';
+                if (btn) {
+                    btn.style.display = 'inline-block';
+                }
             });
             
             if (hasUsableItems()) {
@@ -601,12 +784,14 @@ function showButtonsForState(state) {
                 if (useItemBtn) useItemBtn.style.display = 'inline-block';
             }
             break;
-            
-        case GAME_STATES.COMBAT:
-            const combatButtons = ['attackBtn', 'fleeBtn'];
+        }
+        case GAME_STATES.COMBAT: {
+            var combatButtons = ['attackBtn', 'fleeBtn'];
             combatButtons.forEach(id => {
                 const btn = safeGetElement(id);
-                if (btn) btn.style.display = 'inline-block';
+                if (btn) {
+                    btn.style.display = 'inline-block';
+                }
             });
             
             if (hasUsableItems()) {
@@ -614,6 +799,7 @@ function showButtonsForState(state) {
                 if (useItemBtn) useItemBtn.style.display = 'inline-block';
             }
             break;
+        }
     }
 }
 
@@ -633,9 +819,10 @@ function hasUsableItems() {
     );
 }
 
+// ========== MÉCANIQUES DE JEU ==========
 function getRandomEvent() {
     const events = ['enemy', 'treasure', 'merchant', 'nothing', 'rest', 'potion', 'trap', 'boss', 'levelUp'];
-    const weights = [30, 20, 10, 15, 8, 10, 12, 3, 2]; // Probabilités en %
+    const weights = [30, 20, 10, 15, 8, 10, 12, 3, 2];
     
     const random = Math.random() * 100;
     let cumulative = 0;
@@ -676,12 +863,14 @@ function levelUp() {
     player.health = player.maxHealth;
     player.attack += 2;
     player.defense += 1;
-    
+
+    showEventModal('levelup');
     showNotification(`NIVEAU ${player.level} !`);
-    showMessage(`Félicitations ! Tu atteins le niveau ${player.level} ! Tes statistiques ont augmenté !`);
+    showMessage(`Félicitations ${player.name} ! Tu atteins le niveau ${player.level} ! Tes statistiques ont augmenté !`);
     checkQuestProgress();
 }
 
+// ========== MAGASIN ==========
 function removeShopButtons() {
     document.querySelectorAll('.shop-button').forEach(btn => {
         if (btn.parentNode) {
@@ -693,11 +882,237 @@ function removeShopButtons() {
 function closeShop() {
     removeShopButtons();
     changeGameState(GAME_STATES.EXPLORING);
-    showMessage("Tu quittes le magasin. Bonne aventure !");
+    showMessage(`${player.name}, tu quittes le magasin. Bonne aventure !`);
+}
+
+function getSellPrice(itemName) {
+    return itemSellPrices[itemName] || 1;
+}
+
+function getSellableItems() {
+    const nonConsumables = player.inventory.filter(item => 
+        !item.includes('potion') && !item.includes('Potion')
+    );
+    
+    const consumables = player.inventory.filter(item => 
+        item.includes('potion') || item.includes('Potion')
+    );
+    
+    if (nonConsumables.length === 1 && nonConsumables[0] === 'épée rouillée') {
+        return consumables;
+    }
+    
+    return player.inventory;
+}
+
+function sellItem(itemName) {
+    const itemIndex = player.inventory.indexOf(itemName);
+    if (itemIndex === -1) {
+        showMessage(`${player.name}, tu n'as pas cet objet !`);
+
+        const backBtn = document.createElement('button');
+        backBtn.textContent = 'Retour au magasin';
+        backBtn.className = 'shop-button';
+        backBtn.addEventListener('click', () => {
+            removeShopButtons();
+            openShop();
+        });
+        const story = safeGetElement('story');
+        if (story) {
+            story.appendChild(backBtn);
+        }
+
+        return;
+    }
+    
+    const sellPrice = getSellPrice(itemName);
+    player.inventory.splice(itemIndex, 1);
+    player.gold += sellPrice;
+    player.stats.goldSpent -= sellPrice;
+    
+    showMessage(`${player.name}, tu vends ${itemName} pour ${sellPrice} pièces d'or !`);
+    showNotification(`+${sellPrice} or`);
+    updateUI();
+    
+    setTimeout(() => {
+        showSellInterface();
+    }, 1000);
+}
+
+function showSellInterface() {
+    removeShopButtons();
+    
+    const sellableItems = getSellableItems();
+    
+    if (sellableItems.length === 0) {
+        showMessage(`${player.name}, tu n'as rien à vendre !`);
+        
+        const backBtn = document.createElement('button');
+        backBtn.textContent = 'Retour au magasin';
+        backBtn.className = 'shop-button';
+        backBtn.addEventListener('click', () => {
+            removeShopButtons();
+            openShop();
+        });
+        
+        const story = safeGetElement('story');
+        if (story) {
+            story.appendChild(backBtn);
+        }
+        return;
+    }
+    
+    showMessage(`${player.name}, voici ce que tu peux vendre (prix de vente à 50%) :`);
+    
+    const itemCounts = {};
+    sellableItems.forEach(item => {
+        itemCounts[item] = (itemCounts[item] || 0) + 1;
+    });
+    
+    Object.keys(itemCounts).forEach(itemName => {
+        const count = itemCounts[itemName];
+        const sellPrice = getSellPrice(itemName);
+        
+        const btn = document.createElement('button');
+        btn.textContent = `Vendre ${itemName} ${count > 1 ? `(x${count})` : ''} - ${sellPrice} or${count > 1 ? ` chacun` : ''}`;
+        btn.className = 'shop-button shop-sell-item';
+        
+        btn.addEventListener('click', () => {
+            sellItem(itemName);
+        });
+        
+        const story = safeGetElement('story');
+        if (story) {
+            story.appendChild(btn);
+        }
+    });
+    
+    const backBtn = document.createElement('button');
+    backBtn.textContent = 'Retour au magasin';
+    backBtn.className = 'shop-button';
+    backBtn.addEventListener('click', () => {
+        removeShopButtons();
+        openShop();
+    });
+    
+    const story = safeGetElement('story');
+    if (story) {
+        story.appendChild(backBtn);
+    }
+}
+
+function openShop() {
+    changeGameState(GAME_STATES.SHOPPING);
+    showMessage(`Bienvenue au magasin, ${player.name} ! Tu as ${player.gold} pièces d'or.`);
+    
+    const buyBtn = document.createElement('button');
+    buyBtn.textContent = '🛒 Acheter des objets';
+    buyBtn.className = 'shop-button shop-main-button';
+    buyBtn.addEventListener('click', showBuyInterface);
+    
+    const sellBtn = document.createElement('button');
+    sellBtn.textContent = '💰 Vendre des objets';
+    sellBtn.className = 'shop-button shop-main-button';
+    sellBtn.addEventListener('click', showSellInterface);
+    
+    const exitBtn = document.createElement('button');
+    exitBtn.textContent = '🚪 Quitter le magasin';
+    exitBtn.className = 'shop-button';
+    exitBtn.addEventListener('click', closeShop);
+    
+    const story = safeGetElement('story');
+    if (story) {
+        story.appendChild(buyBtn);
+        story.appendChild(sellBtn);
+        story.appendChild(exitBtn);
+    }
+}
+
+function showBuyInterface() {
+    removeShopButtons();
+    showMessage(`${player.name}, que veux-tu acheter ? Tu as ${player.gold} pièces d'or.`);
+
+    Object.keys(shopItems).forEach(itemKey => {
+        const item = shopItems[itemKey];
+        const btn = document.createElement('button');
+        btn.textContent = `${item.name} (${item.price} or)`;
+        btn.className = 'shop-button';
+        btn.disabled = player.gold < item.price;
+        
+        btn.addEventListener('click', () => {
+            if (player.gold >= item.price) {
+                player.gold -= item.price;
+                player.stats.goldSpent += item.price;
+                
+                if (item.effect === 'heal') {
+                    player.inventory.push(item.name);
+                } else if (item.effect === 'attack') {
+                    player.attack += item.value;
+                    player.inventory.push(item.name);
+                } else if (item.effect === 'defense') {
+                    player.defense += item.value;
+                    player.inventory.push(item.name);
+                }
+                
+                showMessage(`${player.name}, tu achètes ${item.name} pour ${item.price} or !`);
+                showNotification("Achat effectué !");
+                updateUI();
+                
+                setTimeout(() => {
+                    showBuyInterface();
+                }, 1000);
+                checkQuestProgress();
+            }
+        });
+        
+        const story = safeGetElement('story');
+        if (story) {
+            story.appendChild(btn);
+        }
+    });
+    
+    const backBtn = document.createElement('button');
+    backBtn.textContent = 'Retour au magasin';
+    backBtn.className = 'shop-button';
+    backBtn.addEventListener('click', () => {
+        removeShopButtons();
+        openShop();
+    });
+    
+    const story = safeGetElement('story');
+    if (story) {
+        story.appendChild(backBtn);
+    }
 }
 
 // ========== ÉVÉNEMENTS DE JEU ==========
 function setupEventListeners() {
+    // Gestion du nom
+    const confirmNameBtn = safeGetElement('confirmNameBtn');
+    if (confirmNameBtn) {
+        confirmNameBtn.addEventListener('click', setPlayerName);
+    }
+
+    const nameInput = safeGetElement('playerNameInput');
+    if (nameInput) {
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                setPlayerName();
+            }
+        });
+    }
+
+    const changeNameBtn = safeGetElement('changeNameBtn');
+    if (changeNameBtn) {
+        changeNameBtn.addEventListener('click', () => {
+            const input = safeGetElement('playerNameInput');
+            if (input) {
+                input.value = player.name;
+            }
+            showNameModal();
+        });
+    }
+
     // Explorer
     const exploreBtn = safeGetElement('exploreBtn');
     if (exploreBtn) {
@@ -707,79 +1122,92 @@ function setupEventListeners() {
 
             switch(event) {
                 case 'enemy':
-                case 'boss':
                     currentEnemy = getRandomEnemy();
-                    const enemyType = Object.keys(enemies).find(key => enemies[key].name === currentEnemy.name.replace(' (Boss)', ''));
-                    showLocalImagePopup('combat', enemyType);
-                    showMessage(`${currentEnemy.name} apparaît ! Prépare-toi au combat !`);
+                    var enemyType = Object.keys(enemies).find(key => enemies[key].name === currentEnemy.name.replace(' (Boss)', ''));
+                    showEventModal('combat', enemyType);
+                    showMessage(`${currentEnemy.name} apparaît ! Prépare-toi au combat, ${player.name} !`);
                     changeGameState(GAME_STATES.COMBAT);
                     updateEnemyUI();
                     break;
 
                 case 'treasure':
-                    showLocalImagePopup('treasure');
+                    showEventModal('treasure');
                     player.stats.treasuresFound++;
-                    const goldFound = Math.floor(Math.random() * 30) + 10;
-                    player.gold += goldFound;
-                    showMessage(`Tu découvres un coffre contenant ${goldFound} pièces d'or !`);
-                    showNotification(`+${goldFound} or`);
+                    
+                    if (Math.random() < 0.3) {
+                        var treasureItems = ['Épée de fer', 'Bouclier en bois', 'Amulette de chance', 'Gemme précieuse'];
+                        var foundItem = treasureItems[Math.floor(Math.random() * treasureItems.length)];
+                        player.inventory.push(foundItem);
+                        
+                        var goldFound = Math.floor(Math.random() * 20) + 10;
+                        player.gold += goldFound;
+                        showMessage(`${player.name}, tu découvres un coffre contenant ${goldFound} pièces d'or et ${foundItem} !`);
+                        showNotification(`+${goldFound} or + ${foundItem}`);
+                    } else {
+                        var goldFound = Math.floor(Math.random() * 30) + 10;
+                        player.gold += goldFound;
+                        showMessage(`${player.name}, tu découvres un coffre contenant ${goldFound} pièces d'or !`);
+                        showNotification(`+${goldFound} or`);
+                    }
                     updateUI();
                     break;
 
                 case 'merchant':
-                    showLocalImagePopup('merchant');
-                    showMessage('Un marchand mystérieux apparaît et disparaît, laissant derrière lui une petite bourse...');
-                    const merchantGold = Math.floor(Math.random() * 20) + 5;
+                    showEventModal('merchant');
+                    showMessage(`${player.name}, un marchand mystérieux apparaît et disparaît, laissant derrière lui une petite bourse...`);
+                    var merchantGold = Math.floor(Math.random() * 20) + 5;
                     player.gold += merchantGold;
                     showNotification(`+${merchantGold} or`);
                     updateUI();
                     break;
 
                 case 'potion':
-                    showLocalImagePopup('potion');
-                    const potionTypes = ['Potion de soin', 'Grande potion'];
-                    const foundPotion = potionTypes[Math.floor(Math.random() * potionTypes.length)];
+                    showEventModal('potion');
+                    var potionTypes = ['Potion de soin', 'Grande potion'];
+                    var foundPotion = potionTypes[Math.floor(Math.random() * potionTypes.length)];
                     player.inventory.push(foundPotion);
-                    showMessage(`Tu trouves une ${foundPotion} cachée dans les buissons !`);
+                    showMessage(`${player.name}, tu trouves une ${foundPotion} cachée dans les buissons !`);
                     showNotification(`Objet trouvé !`);
                     updateUI();
                     break;
 
                 case 'trap':
-                    showLocalImagePopup('trap');
-                    const damage = Math.floor(Math.random() * 15) + 5;
+                    showEventModal('trap');
+                    var damage = Math.floor(Math.random() * 15) + 5;
                     player.health = Math.max(0, player.health - damage);
-                    showMessage(`Tu tombes dans un piège ! Tu perds ${damage} PV !`);
+                    showMessage(`${player.name}, tu tombes dans un piège ! Tu perds ${damage} PV !`);
                     showNotification(`-${damage} PV`);
                     updateUI();
                     
                     if (player.health <= 0) {
-                        showMessage('Tu es mort... Ton aventure se termine ici.');
+                        hideAllButtons();
+                        showEventModal('game_over');
+                        showMessage(`${player.name} est mort... Ton aventure se termine ici.`);
                         changeGameState(GAME_STATES.GAME_OVER);
                     }
                     break;
 
                 case 'rest':
-                    showLocalImagePopup('rest');
-                    const healAmount = Math.floor(player.maxHealth * 0.3);
+                    showEventModal('rest');
+                    var healAmount = Math.floor(player.maxHealth * 0.3);
                     player.health = Math.min(player.maxHealth, player.health + healAmount);
-                    showMessage(`Tu trouves un endroit paisible pour te reposer. Tu récupères ${healAmount} PV.`);
+                    showMessage(`${player.name}, tu trouves un endroit paisible pour te reposer. Tu récupères ${healAmount} PV.`);
                     showNotification(`+${healAmount} PV`);
                     updateUI();
                     break;
 
                 case 'levelUp':
-                    showImagePopup('levelup');
+                    showEventModal('levelup');
                     gainExp(50);
-                    showMessage('Tu sens une étrange énergie t\'envahir...');
+                    showMessage(`${player.name}, tu sens une étrange énergie t'envahir...`);
                     break;
 
                 default:
                     const messages = [
-                        'Tu avances dans un brouillard épais...',
-                        'Un aigle survole les environs...',
-                        'Le vent souffle doucement à travers les arbres...',
-                        'Les ombres dansent autour de toi...'
+                        `${player.name} avance dans un brouillard épais...`,
+                        `${player.name}, un aigle survole les environs...`,
+                        `${player.name}, le vent souffle doucement à travers les arbres...`,
+                        `${player.name}, les ombres dansent autour de toi...`
                     ];
                     showMessage(messages[Math.floor(Math.random() * messages.length)]);
             }
@@ -794,14 +1222,12 @@ function setupEventListeners() {
         attackBtn.addEventListener('click', () => {
             if (!currentEnemy) return;
 
-            // Attaque du joueur
             const playerDamage = Math.max(1, player.attack + Math.floor(Math.random() * 5) - currentEnemy.defense);
             currentEnemy.health -= playerDamage;
             
-            let message = `Tu attaques ${currentEnemy.name} et infliges ${playerDamage} dégâts !`;
+            let message = `${player.name} attaque ${currentEnemy.name} et inflige ${playerDamage} dégâts !`;
 
             if (currentEnemy.health <= 0) {
-                // Ennemi vaincu
                 player.stats.enemiesKilled++;
                 const expGained = currentEnemy.exp;
                 const goldGained = Math.floor(Math.random() * (currentEnemy.gold[1] - currentEnemy.gold[0] + 1)) + currentEnemy.gold[0];
@@ -813,24 +1239,27 @@ function setupEventListeners() {
                 gainExp(expGained);
                 showNotification(`+${goldGained} or`);
                 
+                hideAllButtons();
+                
                 setTimeout(() => {
-                    showMessage('Victoire ! Tu peux continuer ton exploration.');
+                    showMessage(`Victoire ${player.name} ! Tu peux continuer ton exploration.`);
                     changeGameState(GAME_STATES.EXPLORING);
                     checkQuestProgress();
                 }, 2000);
             } else {
-                // Ennemi contre-attaque
                 const enemyDamage = Math.max(1, currentEnemy.attack + Math.floor(Math.random() * 3) - player.defense);
                 player.health -= enemyDamage;
-                message += ` ${currentEnemy.name} contre-attaque et t'inflige ${enemyDamage} dégâts !`;
+                message += ` ${currentEnemy.name} contre-attaque et inflige ${enemyDamage} dégâts à ${player.name} !`;
                 
                 showMessage(message);
                 updateEnemyUI();
                 updateUI();
                 
                 if (player.health <= 0) {
+                    hideAllButtons();
                     setTimeout(() => {
-                        showMessage('Tu es mort... Ton aventure se termine ici.');
+                        showEventModal('game_over');
+                        showMessage(`${player.name} est mort... Ton aventure se termine ici.`);
                         changeGameState(GAME_STATES.GAME_OVER);
                     }, 1500);
                 }
@@ -841,24 +1270,28 @@ function setupEventListeners() {
     const fleeBtn = safeGetElement('fleeBtn');
     if (fleeBtn) {
         fleeBtn.addEventListener('click', () => {
-            const success = Math.random() > 0.25; // 75% de chance de réussir
+            const success = Math.random() > 0.25;
             
             if (success) {
-                showMessage("Tu prends la fuite avec succès !");
+                showMessage(`${player.name} prend la fuite avec succès !`);
                 setTimeout(() => {
                     changeGameState(GAME_STATES.EXPLORING);
                 }, 1500);
             } else {
                 const damage = Math.floor(Math.random() * 10) + 3;
                 player.health = Math.max(0, player.health - damage);
-                showMessage(`Tu essaies de fuir mais ${currentEnemy.name} t'inflige ${damage} dégâts ! Tu réussis finalement à t'échapper.`);
+                showMessage(`${player.name} essaie de fuir mais ${currentEnemy.name} t'inflige ${damage} dégâts ! Tu réussis finalement à t'échapper.`);
                 showNotification(`-${damage} PV`);
                 updateUI();
                 
                 setTimeout(() => {
                     if (player.health <= 0) {
-                        showMessage('Tu es mort... Ton aventure se termine ici.');
-                        changeGameState(GAME_STATES.GAME_OVER);
+                        hideAllButtons();
+                        setTimeout(() => {
+                            showEventModal('game_over');
+                            showMessage(`${player.name} est mort... Ton aventure se termine ici.`);
+                            changeGameState(GAME_STATES.GAME_OVER);
+                        }, 500);
                     } else {
                         changeGameState(GAME_STATES.EXPLORING);
                     }
@@ -874,7 +1307,7 @@ function setupEventListeners() {
             const potions = player.inventory.filter(item => item.includes('potion') || item.includes('Potion'));
             
             if (potions.length === 0) {
-                showMessage("Tu n'as pas d'objet utilisable !");
+                showMessage(`${player.name}, tu n'as pas d'objet utilisable !`);
                 return;
             }
 
@@ -893,7 +1326,7 @@ function setupEventListeners() {
             player.health = Math.min(player.maxHealth, player.health + healAmount);
             const actualHeal = player.health - oldHealth;
             
-            showMessage(`Tu utilises ${usedPotion} et récupères ${actualHeal} PV !`);
+            showMessage(`${player.name}, tu utilises ${usedPotion} et récupères ${actualHeal} PV !`);
             showNotification(`+${actualHeal} PV`);
             updateUI();
             showButtonsForState(currentGameState);
@@ -905,14 +1338,15 @@ function setupEventListeners() {
     const questBtn = safeGetElement('questBtn');
     if (questBtn) {
         questBtn.addEventListener('click', () => {
-            showMessage('Tu cherches des PNJ ayant besoin d\'aide...');
+            showMessage(`${player.name}, tu cherches des PNJ ayant besoin d'aide...`);
             
             setTimeout(() => {
                 const chance = Math.random();
-                if (chance < 0.7) { // 70% de chance de trouver un PNJ
+                if (chance < 0.7) {
                     meetQuestGiver();
                 } else {
-                    showMessage('Tu ne trouves personne ayant besoin d\'aide pour le moment. Essaie de nouveau plus tard !');
+                    showEventModal('no_quest');
+                    showMessage(`${player.name}, tu ne trouves personne ayant besoin d'aide pour le moment. Essaie de nouveau plus tard !`);
                 }
             }, 1500);
         });
@@ -923,20 +1357,20 @@ function setupEventListeners() {
     if (restBtn) {
         restBtn.addEventListener('click', () => {
             if (player.health === player.maxHealth) {
-                showMessage("Tu es déjà en pleine forme !");
+                showMessage(`${player.name}, tu es déjà en pleine forme !`);
                 return;
             }
             
             const cost = 10;
             if (player.gold < cost) {
-                showMessage("Il te faut 10 pièces d'or pour te reposer dans une auberge.");
+                showMessage(`${player.name}, il te faut 10 pièces d'or pour te reposer dans une auberge.`);
                 return;
             }
             
             player.gold -= cost;
             player.stats.goldSpent += cost;
             player.health = player.maxHealth;
-            showMessage(`Tu te reposes dans une auberge confortable pour 10 or. Santé restaurée !`);
+            showMessage(`${player.name} se repose dans une auberge confortable pour 10 or. Santé restaurée !`);
             showNotification("Santé restaurée !");
             updateUI();
             checkQuestProgress();
@@ -952,54 +1386,7 @@ function setupEventListeners() {
                 return;
             }
             
-            changeGameState(GAME_STATES.SHOPPING);
-            showMessage(`Bienvenue au magasin ! Tu as ${player.gold} pièces d'or.`);
-
-            Object.keys(shopItems).forEach(itemKey => {
-                const item = shopItems[itemKey];
-                const btn = document.createElement('button');
-                btn.textContent = `${item.name} (${item.price} or)`;
-                btn.className = 'shop-button';
-                btn.disabled = player.gold < item.price;
-                
-                btn.addEventListener('click', () => {
-                    if (player.gold >= item.price) {
-                        player.gold -= item.price;
-                        player.stats.goldSpent += item.price;
-                        
-                        if (item.effect === 'heal') {
-                            player.inventory.push(item.name);
-                        } else if (item.effect === 'attack') {
-                            player.attack += item.value;
-                            player.inventory.push(item.name);
-                        } else if (item.effect === 'defense') {
-                            player.defense += item.value;
-                            player.inventory.push(item.name);
-                        }
-                        
-                        showMessage(`Tu achètes ${item.name} pour ${item.price} or !`);
-                        showNotification("Achat effectué !");
-                        updateUI();
-                        closeShop();
-                        checkQuestProgress();
-                    }
-                });
-                
-                const story = safeGetElement('story');
-                if (story) {
-                    story.appendChild(btn);
-                }
-            });
-            
-            const exitBtn = document.createElement('button');
-            exitBtn.textContent = 'Quitter le magasin';
-            exitBtn.className = 'shop-button';
-            exitBtn.addEventListener('click', closeShop);
-            
-            const story = safeGetElement('story');
-            if (story) {
-                story.appendChild(exitBtn);
-            }
+            openShop();
         });
     }
 
@@ -1030,13 +1417,11 @@ function setupEventListeners() {
                 if (save) {
                     const saveData = JSON.parse(save);
                     
-                    // Rétrocompatibilité avec les anciennes sauvegardes
                     if (saveData.player) {
                         player = { ...player, ...saveData.player };
                         activeQuests = saveData.activeQuests || [];
                         completedQuests = saveData.completedQuests || [];
                         
-                        // Ajouter les nouvelles propriétés si elles n'existent pas
                         if (!player.stats) {
                             player.stats = {
                                 enemiesKilled: 0,
@@ -1047,7 +1432,6 @@ function setupEventListeners() {
                             };
                         }
                     } else {
-                        // Ancienne sauvegarde (juste le joueur)
                         player = { ...player, ...saveData };
                         if (!player.stats) {
                             player.stats = {
@@ -1066,7 +1450,7 @@ function setupEventListeners() {
                     updateQuestDisplay();
                     changeGameState(GAME_STATES.EXPLORING);
                     showNotification('Partie chargée !');
-                    showMessage('Sauvegarde chargée ! Ton aventure reprend...');
+                    showMessage(`Sauvegarde chargée ! ${player.name}, ton aventure reprend...`);
                 } else {
                     showNotification('Aucune sauvegarde trouvée !');
                 }
@@ -1105,7 +1489,7 @@ function setupEventListeners() {
                 updateUI();
                 updateQuestDisplay();
                 changeGameState(GAME_STATES.EXPLORING);
-                showMessage('Nouvelle aventure ! Que le courage soit avec toi !');
+                showNameModal();
                 showNotification('Nouvelle partie !');
             }
         });
@@ -1119,7 +1503,7 @@ function initializeGame() {
     updateUI();
     updateQuestDisplay();
     changeGameState(GAME_STATES.EXPLORING);
-    showMessage('Bienvenue, brave aventurier ! Ton voyage commence maintenant...');
+    showNameModal();
 }
 
 // Attendre que le DOM soit chargé
