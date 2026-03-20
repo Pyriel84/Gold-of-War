@@ -7,7 +7,11 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #2c3e50, #34495e);
+    background-image: url('images/fondecran.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: #ecf0f1;
     min-height: 100vh;
     padding: 20px;
