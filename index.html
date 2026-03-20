@@ -10,7 +10,18 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
+
+    <!-- Écran d'accueil -->
+    <div id="welcome-screen">
+        <div id="welcome-box">
+            <h1>⚔️ Gold of War ⚔️</h1>
+            <p>Entre le nom de ton héros pour commencer l'aventure !</p>
+            <input type="text" id="heroNameInput" placeholder="Nom du héros..." maxlength="20" />
+            <button id="startBtn">⚔️ Commencer l'aventure</button>
+        </div>
+    </div>
+
+    <div class="container" id="game-container" style="display: none;">
         <h1>⚔️ Gold of War ⚔️</h1>
         
         <div class="game-layout">
