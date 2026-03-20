@@ -215,7 +215,9 @@ function updateUI() {
 }
 
 function updateEnemyUI() {
-    const enemyInfo = safeGetElement('enemy-info');
+    const enemyInfo  = safeGetElement('enemy-info');
+    const enemyImage = document.getElementById('enemyImage');
+
     if (!enemyInfo) return;
 
     if (currentEnemy) {
@@ -239,12 +241,18 @@ function updateEnemyUI() {
             enemyHealthFill.style.width = percent + '%';
         }
 
+        if (enemyImage && currentEnemy.image) {
+            enemyImage.src             = currentEnemy.image;
+            enemyImage.alt             = currentEnemy.name;
+            enemyImage.style.display   = 'block';
+        }
+
         enemyInfo.style.display = 'block';
     } else {
+        if (enemyImage) enemyImage.style.display = 'none';
         enemyInfo.style.display = 'none';
     }
 }
-
 // ========== SYSTÈME DE QUÊTES ==========
 function updateQuestDisplay() {
     const activeQuestsDiv = safeGetElement('active-quests');
