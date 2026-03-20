@@ -109,11 +109,11 @@ const questGivers = [
 ];
 
 const enemies = {
-    goblin:   { name: 'Gobelin',   image: 'images/gobelin.png',   health: 30,  ... },
-    orc:      { name: 'Orc',       image: 'images/orc.png',       health: 50,  ... },
-    troll:    { name: 'Troll',     image: 'images/troll.png',     health: 80,  ... },
-    dragon:   { name: 'Dragon',    image: 'images/dragon.png',    health: 150, ... },
-    skeleton: { name: 'Squelette', image: 'images/squelette.png', health: 40,  ... }
+    goblin:   { name: 'Gobelin',   image: 'images/gobelin.png',   health: 30,  maxHealth: 30,  attack: 5,  defense: 1, exp: 15, gold: [5,  15] },
+    orc:      { name: 'Orc',       image: 'images/orc.png',       health: 50,  maxHealth: 50,  attack: 8,  defense: 3, exp: 25, gold: [10, 25] },
+    troll:    { name: 'Troll',     image: 'images/troll.png',     health: 80,  maxHealth: 80,  attack: 12, defense: 5, exp: 40, gold: [15, 35] },
+    dragon:   { name: 'Dragon',    image: 'images/dragon.png',    health: 150, maxHealth: 150, attack: 20, defense: 8, exp: 80, gold: [30, 70] },
+    skeleton: { name: 'Squelette', image: 'images/squelette.png', health: 40,  maxHealth: 40,  attack: 7,  defense: 2, exp: 20, gold: [8,  20] }
 };
 
 const shopItems = {
