@@ -576,10 +576,11 @@ function setupEventListeners() {
                     player.stats.treasuresFound++;
                     const goldFound = Math.floor(Math.random() * 30) + 10;
                     player.gold += goldFound;
-                    showMessage(`Tu découvres un coffre contenant ${goldFound} pièces d'or !`);
+                    showMessage(`<img src="images/tresor.png" alt="Trésor" style="max-width:100px; display:block; margin:10px auto;">`);
+                    addMessage(`Tu découvres un coffre contenant ${goldFound} pièces d'or !`);
                     showNotification(`+${goldFound} or`);
                     updateUI();
-                    break;
+                    break; 
 
                 case 'merchant':
                     showMessage('Un marchand mystérieux apparaît et disparaît, laissant derrière lui une petite bourse...');
@@ -599,6 +600,7 @@ function setupEventListeners() {
                     break;
 
                 case 'trap':
+                    showMessage(`<img src="images/trap.png" alt="Piège" style="max-width:100px"><br>Tu tombes dans un piège !`);
                     const trapDamage = Math.floor(Math.random() * 15) + 5;
                     player.health    = Math.max(0, player.health - trapDamage);
                     showMessage(`Tu tombes dans un piège ! Tu perds ${trapDamage} PV !`);
