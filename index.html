@@ -3,29 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- CORRECTION : ajout d'une meta description (bonne pratique SEO/accessibilité) -->
+    <meta name="description" content="Gold of War - Jeu de rôle textuel en navigateur. Explorez, combattez et progressez !"/>
     <title>Gold of War</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Modal de sélection du nom -->
-    <div id="nameModal" class="name-modal">
-        <div class="name-modal-content">
-            <h2>⚔️ Bienvenue, Aventurier ! ⚔️</h2>
-            <p style="margin-bottom: 20px;">Quel est ton nom, brave héros ?</p>
-            <input type="text" id="playerNameInput" class="name-input" placeholder="Tape ton nom ici..." maxlength="20">
-            <div>
-                <button id="confirmNameBtn">Commencer l'aventure !</button>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <h1>⚔️ Gold of War ⚔️</h1>
         
         <div class="game-layout">
             <!-- Panneau des statistiques du joueur -->
             <div class="stats-panel">
-                <h2>👤 <span id="playerNameTitle">Héros</span></h2>
+                <h2>👤 Héros</h2>
                 
                 <div class="stat-item">
                     <strong>Nom :</strong>
@@ -37,7 +27,7 @@
                     <span id="playerHealth">100</span> / <span id="playerMaxHealth">100</span>
                 </div>
                 <div class="progress-bar">
-                    <div id="healthFill" class="progress-fill" style="width: 100%"></div>
+                    <div id="healthFill" class="progress-fill health-fill" style="width: 100%"></div>
                 </div>
                 
                 <div class="stat-item">
@@ -50,7 +40,7 @@
                     <span id="playerExp">0</span> / <span id="playerMaxExp">100</span>
                 </div>
                 <div class="progress-bar">
-                    <div id="expFill" class="progress-fill" style="width: 0%"></div>
+                    <div id="expFill" class="progress-fill exp-fill" style="width: 0%"></div>
                 </div>
                 
                 <div class="stat-item">
@@ -79,15 +69,15 @@
             <!-- Section histoire principale -->
             <div class="story-section">
                 <div id="story">
-                    <p>Bienvenue, brave aventurier ! Ton périple commence maintenant...</p>
+                    <p>🌟 Bienvenue, brave aventurier ! Ton périple commence maintenant...</p>
                 </div>
                 
                 <div class="controls">
                     <button id="exploreBtn">🗺️ Explorer</button>
-                    <button id="attackBtn" style="display: none;">⚔️ Attaquer</button>
-                    <button id="fleeBtn" style="display: none;">🏃 Fuir</button>
+                    <button id="attackBtn"  style="display: none;">⚔️ Attaquer</button>
+                    <button id="fleeBtn"    style="display: none;">🏃 Fuir</button>
                     <button id="useItemBtn" style="display: none;">🧪 Utiliser une potion</button>
-                    <button id="shopBtn">🏪 Magasin</button>
+                    <button id="shopBtn">🏪 Aller au magasin</button>
                     <button id="questBtn">📜 Chercher des quêtes</button>
                     <button id="restBtn">😴 Se reposer (10 or)</button>
                 </div>
@@ -98,9 +88,6 @@
                 <h2>📜 Quêtes Actives</h2>
                 <div id="active-quests">
                     <p style="text-align: center; color: #999;">Aucune quête active. Cherche des PNJ pour obtenir des missions !</p>
-                </div>
-                <div class="quest-tip">
-                    <strong>💡 Astuce:</strong> Utilise le bouton "📜 Chercher des quêtes" pour rencontrer des PNJ qui ont besoin d'aide !
                 </div>
             </div>
         </div>
@@ -117,6 +104,11 @@
                 <div class="stat-item">
                     <strong>❤️ PV :</strong>
                     <span id="enemyHealth">0</span> / <span id="enemyMaxHealth">0</span>
+                </div>
+
+                <!-- CORRECTION #5 : barre de vie de l'ennemi ajoutée -->
+                <div class="progress-bar">
+                    <div id="enemyHealthFill" class="progress-fill health-fill" style="width: 100%"></div>
                 </div>
                 
                 <div class="stat-item">
@@ -136,24 +128,6 @@
             <button id="saveBtn">💾 Sauvegarder</button>
             <button id="loadBtn">📁 Charger</button>
             <button id="resetBtn">🔄 Nouvelle partie</button>
-            <button id="changeNameBtn">✏️ Changer de nom</button>
-        </div>
-    </div>
-
-    <!-- Modal d'événement -->
-    <div id="eventModal" class="modal-overlay">
-        <div id="eventModalContent" class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle" class="modal-title">Titre de l'événement</h3>
-                <button class="modal-close" onclick="closeEventModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div id="modalImageContainer" class="modal-image-container"></div>
-                <p id="modalDescription" class="modal-description">Description de l'événement</p>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-button" onclick="closeEventModal()">Continuer l'aventure</button>
-            </div>
         </div>
     </div>
 
